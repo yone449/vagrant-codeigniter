@@ -1,4 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+$route['default_controller'] = 'Blog';
 /*
 | -------------------------------------------------------------------------
 | URI ROUTING
@@ -38,8 +39,8 @@
 |
 */
 
-$route['default_controller'] = "welcome";
-$route['404_override'] = '';
+//$route['default_controller'] = "pages/view";
+//$route['404_override'] = 'pages/view/$1';
 
 
 /* End of file routes.php */
