@@ -1,26 +1,22 @@
 <html>
 <head>
-<title>ユーザ登録</title>
+<title>ツイート画面</title>
 </head>
 <body>
 
-<?php echo validation_errors(); ?>
 
-<?php echo form_open('twitter/register'); ?>
 
-<h5>ユーザ名(4文字以上12文字以下)</h5>
-	<input type="text" name="username" value="<?php echo set_value('username'); ?>" size="50" />
+<ul>
+<?php foreach ($tweets as $row) { ?>
+	<li>
+	<?php echo $row['UserID']; ?>:<?php echo $row['Date']; ?>
+	</li>
+	<?php echo $row['TweetText']; ?>
+<?php } ?>
+</ul>
 
-<h5>パスワード</h5>
-<input type="password" name="password" value="" size="50" />
 
-<h5>パスワードの確認</h5>
-<input type="password" name="passconf" value="" size="50" />
-
-<h5>メールアドレス</h5>
-<input type="text" name="email" value="<?php echo set_value('email'); ?>" size="50" />
-
-<div><input type="submit" value="送信" /></div>
+<div><input type="submit" value="次の10件" /></div>
 
 </form>
 
