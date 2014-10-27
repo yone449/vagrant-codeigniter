@@ -11,9 +11,11 @@ class User_model extends CI_Model {
 	{
 		$this->load->helper('url');
 
-
+		$this->db->select_max('UserID');
+		$query = $this->db->get('User');
+		$row=$query->row_array(1);
 		$data = array(
-			'UserID' => $this->db->count_all('User'),
+			'UserID' => $row['UserID']+1,
 			'UserName' => $this->input->post('username'),
 			'password' => $this->input->post('password'),
 			'MailAdd' => $this->input->post('email')
