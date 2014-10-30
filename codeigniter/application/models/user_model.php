@@ -28,10 +28,13 @@ class User_model extends CI_Model {
 
 	public function check_user()
 	{
-		$this->load->helper('url');
-
 		$this->db->where('MailAdd',$this->input->post('email'));
 		$this->db->where('password',$this->input->post('password'));
 		return $this->db->count_all_results('User');
+	}
+	public function check_session()
+	{
+		$this->db->where('session_id',$this->session->userdata('session_id'));
+		return $this->db->count_all_results('Session');
 	}
 }

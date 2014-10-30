@@ -9,7 +9,7 @@
 <ul>
 <?php foreach ($tweets as $row) { ?>
 	<li>
-	<?php echo $row['UserID']; ?>:<?php echo $row['Date']; ?>
+	<?php echo $row['UserName']; ?>さん:<?php echo $row['Date']; ?>
 	</li>
 	<?php echo $row['TweetText']; ?>
 <?php } ?>

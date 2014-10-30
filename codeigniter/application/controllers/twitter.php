@@ -7,14 +7,23 @@ class Twitter extends CI_Controller {
 		parent::__construct();
 		$this->load->model('user_model');
 		$this->load->helper('url');
+		$this->load->helper('form');
 
 	}
 
 	function index()
 	{
 		$this->load->library('form_validation');
-		$this->load->helper('date');
+		$this->load->library('session');
 
+		//echo $this->user_model->check_session();
+		//echo $this->session->userdata('session_id');
+		if ($this->user_model->check_session()==0){
+				redirect('twitter/login','refresh');
+		}
+		$email=$this->session->userdata('email');
+		echo $this->session->userdata('username');
+		echo 'さん';
 		$this->form_validation->set_rules('tweet', 'ツイート', 'trim|required');
 
 		if ( $this->form_validation->run() == FALSE){
@@ -23,27 +32,34 @@ class Twitter extends CI_Controller {
 			$this->db->select_max('TweetID');
 			$query = $this->db->get('Tweet');
 			$row=$query->row_array(1);
-		$data = array(
-			'TweetID' => $row['TweetID']+1,
-			'UserID' => 1,
-			'TweetText' => $this->input->post('tweet'),
-			'Date' => time()
+			$data = array(
+				'TweetID' => $row['TweetID']+1,
+				'MailAdd' => $email,
+				'TweetText' => $this->input->post('tweet'),
+				'Date' => date('Y-m-d H:i:s')
 
-		);
+			);
 
-		$this->db->insert('Tweet', $data);
+			$this->db->insert('Tweet', $data);
 			$this->load->view('twitter/input');
 			echo '送信されました。';
 		}
-		$this->db->where('UserID','1');
-		$data['tweets']=$this->db->get('Tweet')->result_array();
+		$this->db->where('Tweet.MailAdd',$email);
+		$this->db->order_by("Date", "desc");
+		$this->db->from('Tweet');
+		$this->db->join('User','Tweet.MailAdd=User.MailAdd','left');
+		$data['tweets']=$this->db->get()->result_array();
+		
 		$this->load->view('twitter/tweet',$data);
+		
+		
 	}
 
 
 	function login()
 	{
 		$this->load->library('form_validation');
+		$this->load->library('session');
 
 		$this->form_validation->set_rules('email', 'メールアドレス', 'trim|required|valid_email');
 		$this->form_validation->set_rules('password', 'パスワード', 'trim|required|md5');
@@ -55,9 +71,28 @@ class Twitter extends CI_Controller {
 		else
 		{
 			if ($this->user_model->check_user()==1){
-				$this->load->view('twitter/loginsuccess');
+				//$this->load->view('twitter/loginsuccess');
+				//echo $this->session->userdate('session_id');
+				$this->db->where('MailAdd',$this->input->post('email'));
+				$query=$this->db->get('User');
+				$row=$query->row_array(1);
+				$newdata = array(
+					'username'  => $row['UserName'],
+					'email'     => $this->input->post('email'),
+					'logged_in' => TRUE
+				);
+				$this->session->set_userdata($newdata);
+				$session_id=$this->session->userdata('session_id');
+				$this->db->where('session_id',$session_id);
+				$query=$this->db->from('Session');
+				if($this->db->count_all_results()==0){
+					$array = array(
+						'session_id' => $session_id 
+					);
+					$this->db->insert('Session',$array);
+
+				}
 				redirect('twitter','refresh');
-				
 			}
 			else{
 				echo 'パスワードかメールアドレスが間違っています。';
@@ -69,9 +104,9 @@ class Twitter extends CI_Controller {
 	}
 	function register()
 	{
-		$this->load->helper('form');
-
 		$this->load->library('form_validation');
+		$this->load->library('session');
+
 		$this->form_validation->set_rules('username', 'ユーザ名', 'trim|required|min_length[4]|max_length[12]|xss_clean');
 		$this->form_validation->set_rules('password', 'パスワード', 'trim|required|min_length[6]|matches[passconf]|md5');
 		$this->form_validation->set_rules('passconf', 'パスワードの確認', 'trim|required');
