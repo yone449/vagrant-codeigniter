@@ -21,6 +21,7 @@ class Twitter extends CI_Controller {
 		if ($this->user_model->check_session()==0){
 				redirect('twitter/login','refresh');
 		}
+
 		$email=$this->session->userdata('email');
 		echo $this->session->userdata('username');
 		echo 'さん';
@@ -71,8 +72,6 @@ class Twitter extends CI_Controller {
 		else
 		{
 			if ($this->user_model->check_user()==1){
-				//$this->load->view('twitter/loginsuccess');
-				//echo $this->session->userdate('session_id');
 				$this->db->where('MailAdd',$this->input->post('email'));
 				$query=$this->db->get('User');
 				$row=$query->row_array(1);
@@ -119,7 +118,21 @@ class Twitter extends CI_Controller {
 		else
 		{
 			$this->user_model->set_user();
-			$this->load->view('twitter/formsuccess');
+			$newdata = array(
+				'username'  => $this->input->post('username'),
+				'email'     => $this->input->post('email'),
+				'logged_in' => TRUE
+			);
+			$this->session->set_userdata($newdata);
+			$session_id=$this->session->userdata('session_id');
+			$this->db->where('session_id',$session_id);
+			$query=$this->db->from('Session');
+			if($this->db->count_all_results()==0){
+				$array = array(
+					'session_id' => $session_id 
+				);
+				$this->db->insert('Session',$array);
+			}
 			redirect('twitter','refresh');
 
 		}
