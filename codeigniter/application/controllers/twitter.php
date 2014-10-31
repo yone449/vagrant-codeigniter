@@ -8,6 +8,7 @@ class Twitter extends CI_Controller {
 		$this->load->model('user_model');
 		$this->load->helper('url');
 		$this->load->helper('form');
+		$this->load->library('javascript');
 
 	}
 
@@ -23,8 +24,8 @@ class Twitter extends CI_Controller {
 		}
 
 		$email=$this->session->userdata('email');
-		echo $this->session->userdata('username');
-		echo 'さん';
+		$data['username']=$this->session->userdata('username');
+		$this->load->view('twitter/header',$data);
 		$this->form_validation->set_rules('tweet', 'ツイート', 'trim|required');
 
 		if ( $this->form_validation->run() == FALSE){
@@ -53,9 +54,22 @@ class Twitter extends CI_Controller {
 		
 		$this->load->view('twitter/tweet',$data);
 		
-		
 	}
 
+	function post_action()
+	{   
+		if($this->input->post('textbox') == "")
+		{
+			$message = "You can't send empty text";
+
+		}
+		else
+		{
+			$message = $this->input->post('textbox');
+
+		}
+		echo $message;
+	}
 
 	function login()
 	{
