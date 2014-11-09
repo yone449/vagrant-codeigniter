@@ -25,44 +25,45 @@ class Twitter extends CI_Controller {
 
 		$email=$this->session->userdata('email');
 		$data['username']=$this->session->userdata('username');
+		
 		$this->load->view('twitter/header',$data);
-		$this->form_validation->set_rules('tweet', 'ツイート', 'trim|required');
 
-		if ( $this->form_validation->run() == FALSE){
-			$this->load->view('twitter/input');
-		}else{
-			$this->db->select_max('TweetID');
-			$query = $this->db->get('Tweet');
-			$row=$query->row_array(1);
-			$data = array(
-				'TweetID' => $row['TweetID']+1,
-				'MailAdd' => $email,
-				'TweetText' => $this->input->post('tweet'),
-				'Date' => date('Y-m-d H:i:s')
-
-			);
-
-			$this->db->insert('Tweet', $data);
-			$this->load->view('twitter/input');
-			echo '送信されました。';
-		}
-		$this->db->where('Tweet.MailAdd',$email);
-		$this->db->order_by("Date", "desc");
-		$this->db->from('Tweet');
-		$this->db->join('User','Tweet.MailAdd=User.MailAdd','left');
-		$data['tweets']=$this->db->get()->result_array();
 		$data['mailadd']=$email;
 		
 		$this->load->view('twitter/tweet',$data);
 		
 	}
 
-	function post_action()
+	function new_tweet()
 	{   
 			$this->db->where('Tweet.MailAdd',$this->input->post('mailadd'));
 			$this->db->order_by("Date", "desc");
 			$this->db->join('User','Tweet.MailAdd=User.MailAdd','left');
 			$query = $this->db->get('Tweet',10,$this->input->post('num'));
+			$data['tweets']=$query->result_array();
+			$this->load->view('twitter/hyouji',$data);
+	}
+
+	function submit_tweet(){
+		if($this->input->post('tweettext')==""){
+			return FALSE;
+		}
+			$this->db->select_max('TweetID');
+			$query = $this->db->get('Tweet');
+			$row=$query->row_array(1);
+			$data = array(
+				'TweetID' => $row['TweetID']+1,
+				'MailAdd' => $this->input->post('mailadd'),
+				'TweetText' => $this->input->post('tweettext'),
+				'Date' => date('Y-m-d H:i:s')
+
+			);
+
+			$this->db->insert('Tweet', $data);
+
+			$this->db->where('Tweet.TweetID',$row['TweetID']+1);
+			$this->db->join('User','Tweet.MailAdd=User.MailAdd','left');
+			$query = $this->db->get('Tweet');
 			$data['tweets']=$query->result_array();
 			$this->load->view('twitter/hyouji',$data);
 	}

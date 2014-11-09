@@ -10,7 +10,7 @@
 <textarea name="tweet" cols="50" rows="5">
 </textarea>
 
-<div><input type="submit" name="tweetbutton" value="ツイート" /></div>
+<div><input type="submit" name="tweetbutton" value="残り" /></div>
     </form>
   </body>
 </html>
