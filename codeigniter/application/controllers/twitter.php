@@ -51,6 +51,7 @@ class Twitter extends CI_Controller {
 		$this->db->from('Tweet');
 		$this->db->join('User','Tweet.MailAdd=User.MailAdd','left');
 		$data['tweets']=$this->db->get()->result_array();
+		$data['mailadd']=$email;
 		
 		$this->load->view('twitter/tweet',$data);
 		
@@ -58,17 +59,12 @@ class Twitter extends CI_Controller {
 
 	function post_action()
 	{   
-		if($this->input->post('textbox') == "")
-		{
-			$message = "You can't send empty text";
-
-		}
-		else
-		{
-			$message = $this->input->post('textbox');
-
-		}
-		echo $message;
+			$this->db->where('Tweet.MailAdd',$this->input->post('mailadd'));
+			$this->db->order_by("Date", "desc");
+			$this->db->join('User','Tweet.MailAdd=User.MailAdd','left');
+			$query = $this->db->get('Tweet',10,$this->input->post('num'));
+			$data['tweets']=$query->result_array();
+			$this->load->view('twitter/hyouji',$data);
 	}
 
 	function login()

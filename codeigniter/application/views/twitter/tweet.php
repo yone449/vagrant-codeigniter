@@ -2,44 +2,41 @@
 <head>
 <title>ツイート画面</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="<?=base_url("index.php/js/message.js")?>"></script>
 </head>
 <body>
 
 
 
 <ul>
-<?php foreach ($tweets as $row) { ?>
-	<li>
-	<?php echo $row['UserName']; ?>さん:<?php echo $row['Date']; ?>
-	</li>
-	<?php echo $row['TweetText']; ?>
-<?php } ?>
 </ul>
 
 <script>
 $(function(){
+		var num=0;
 	$("#btn").click(function(){
-		$('ul').append('<li>AAAAAA</li>');
-//		$.ajax({
-//			type: "POST",
-//				url: "twitter/post_action"
-//				data: {'textbox': $("#textbox").val()},
-//				dataType: "text",  
-//				cache:false,
-//				success: 
-//				function(data){
-//					alert(data);  //as a debugging message.
-//
-//				}
-//
-//			return false;
-//		})
+		$.ajax({
+			type: "POST",
+				url: "twitter/post_action",
+				data: {
+					'num': num,
+					'mailadd':'<?php echo $mailadd ?>',
+					'csrf_test_name': $('[name="csrf_test_name"]').val()
+				},
+				cache:false,
+				success: 
+				function(data){
+					$('ul').append(data);
+
+				}
+		});
+
+		num=num+10;
 	});
 });
 </script>
 
 
-<input id="textbox" type="text" name="textbox">
 <div id="btn"><input type="submit" value="次の10件" /></div>
 
 </form>
