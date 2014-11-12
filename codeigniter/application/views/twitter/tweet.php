@@ -2,10 +2,17 @@
 <head>
 <title>ツイート画面</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="<?=base_url("index.php/js/message.js")?>"></script>
 </head>
 <body>
 
+<style type="text/css">
+
+div {
+}
+textarea {
+width: 100%;
+}
+</style>
 
 <script>
 $(function(){
@@ -21,7 +28,7 @@ $(function(){
 				cache:false,
 				success: 
 				function(data){
-					$('ul').prepend(data);
+					$('#tweet_contents').prepend(data);
 					num=num+10;
 
 				}
@@ -39,7 +46,7 @@ $(function(){
 				success: 
 				function(data){
 					if(data!=""){
-						$('ul').prepend(data);
+						$('#tweet_contents').prepend(data);
 						alert('送信されました');
 						num=num+1;
 
@@ -61,7 +68,7 @@ $(function(){
 				cache:false,
 				success: 
 				function(data){
-					$('ul').append(data);
+					$('#tweet_contents').append(data);
 					num=num+10;
 
 				}
@@ -71,16 +78,20 @@ $(function(){
 });
 </script>
 
+<p><?php echo $username ?>さん</p><div align='right'><a href="<?php echo site_url("twitter/logout") ?>">ログアウト</a>
+</div>
+<br>
 
-<textarea id="tweettext" name="tweettext" cols="50" rows="5">
+<div style="width:500; position: relative; top: 0; left:100px;">
+<textarea id="tweettext" name="tweettext"  rows="5">
 </textarea>
 
 <div id="tweetbtn"><input type="submit" name="tweetbutton" value="ツイート" /></div>
-
-<ul>
-</ul>
+<div id="tweet_contents">
+</div>
 
 <div id="btn"><input type="submit" value="次の10件" /></div>
+</div>
 
 </form>
 

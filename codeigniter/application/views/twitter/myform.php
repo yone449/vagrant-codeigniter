@@ -11,7 +11,7 @@
 <h5>ユーザ名(4文字以上12文字以下)</h5>
 	<input type="text" name="username" value="<?php echo set_value('username'); ?>" size="50" />
 
-<h5>パスワード</h5>
+<h5>パスワード(6文字以上)</h5>
 <input type="password" name="password" value="" size="50" />
 
 <h5>パスワードの確認</h5>
