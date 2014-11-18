@@ -26,11 +26,11 @@ class Twitter extends CI_Controller
 
 		$email=$this->session->userdata('email');
 		$data['username']=$this->session->userdata('username');
-		
+
 		$data['mailadd']=$email;
-		
+
 		$this->load->view('twitter/tweet',$data);
-		
+
 	}
 
 	function new_tweet()
@@ -59,27 +59,27 @@ class Twitter extends CI_Controller
 		{
 			return FALSE;
 		}
-			$sql="SELECT MAX(`TweetID`) AS `TweetID` FROM `Tweet`";
-			$row=$this->db->query($sql)->row_array();
-			$sqldata = array(
-				'TweetID' => $row['TweetID']+1,
-				'MailAdd' => $this->input->post('mailadd'),
-				'TweetText' => $this->input->post('tweettext'),
-				'Date' => date('Y-m-d H:i:s')
+		$sql="SELECT MAX(`TweetID`) AS `TweetID` FROM `Tweet`";
+		$row=$this->db->query($sql)->row_array();
+		$sqldata = array(
+			'TweetID' => $row['TweetID']+1,
+			'MailAdd' => $this->input->post('mailadd'),
+			'TweetText' => $this->input->post('tweettext'),
+			'Date' => date('Y-m-d H:i:s')
 
-			);
-			$this->db->insert('Tweet', $sqldata);
+		);
+		$this->db->insert('Tweet', $sqldata);
 
-			$sql="SELECT `TweetText`,`Date`,`UserName` FROM `Tweet`"
-				." LEFT JOIN `User` ON `Tweet`.`MailAdd`=`User`.`MailAdd`"
+		$sql="SELECT `TweetText`,`Date`,`UserName` FROM `Tweet`"
+			." LEFT JOIN `User` ON `Tweet`.`MailAdd`=`User`.`MailAdd`"
 			." WHERE `Tweet`.`TweetID`='".($row['TweetID']+1)."'";
-			$result=$this->db->query($sql)->result_array();
-			foreach($result as &$row)
-			{
-				$row['Date']=$this->user_model->convert_to_fuzzy_time($row['Date']);
-			}
-			$data['tweets']=$result;
-			$this->load->view('twitter/hyouji',$data);
+		$result=$this->db->query($sql)->result_array();
+		foreach($result as &$row)
+		{
+			$row['Date']=$this->user_model->convert_to_fuzzy_time($row['Date']);
+		}
+		$data['tweets']=$result;
+		$this->load->view('twitter/hyouji',$data);
 	}
 
 	function login()
