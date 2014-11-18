@@ -2,6 +2,7 @@
 <head>
 <title>ツイート画面</title>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/sample.js"></script>
 </head>
 <body>
 
@@ -47,6 +48,7 @@ $(function(){
 				function(data){
 					if(data!=""){
 						$('#tweet_contents').prepend(data);
+						$("#tweettext").val("");
 						alert('送信されました');
 						num=num+1;
 
@@ -57,6 +59,7 @@ $(function(){
 
 	});
 	$("#btn").click(function(){
+//	function new_tweet(){
 		$.ajax({
 			type: "POST",
 				url: "twitter/new_tweet",
@@ -78,15 +81,16 @@ $(function(){
 });
 </script>
 
-<p><?php echo $username ?>さん</p><div align='right'><a href="<?php echo site_url("twitter/logout") ?>">ログアウト</a>
+<div style="float:left"><?php echo $username ?>さん</div>
+<div style="float:right"><a href="<?php echo site_url("twitter/logout") ?>">ログアウト</a>
 </div>
-<br>
 
 <div style="width:500; position: relative; top: 0; left:100px;">
 <textarea id="tweettext" name="tweettext"  rows="5">
 </textarea>
 
-<div id="tweetbtn"><input type="submit" name="tweetbutton" value="ツイート" /></div>
+<div id="tweetbtn"><input type="button"  name="tweetbutton" value="ツイート" /></div>
+
 <div id="tweet_contents">
 </div>
 
