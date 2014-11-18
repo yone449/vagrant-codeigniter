@@ -1,9 +1,10 @@
 <?php
 
-class Twitter extends CI_Controller {
+class Twitter extends CI_Controller 
+{
 
-	public function __construct(){
-
+	public function __construct()
+	{
 		parent::__construct();
 		$this->load->model('user_model');
 		$this->load->helper('url');
@@ -12,12 +13,14 @@ class Twitter extends CI_Controller {
 
 	}
 
-	function index(){
+	function index()
+	{
 		$this->load->library('form_validation');
 		$this->load->library('session');
 
 
-		if($this->session->userdata('login')!=='TRUE'){
+		if($this->session->userdata('login')!=='TRUE')
+		{
 			redirect('twitter/login','refresh');
 		}
 
@@ -30,7 +33,8 @@ class Twitter extends CI_Controller {
 		
 	}
 
-	function new_tweet(){   
+	function new_tweet()
+	{   
 		$sql="SELECT `TweetText`,`Date`,`UserName` FROM `Tweet`"
 			." LEFT JOIN `User` ON `Tweet`.`MailAdd`=`User`.`MailAdd`"
 			." WHERE `Tweet`.`MailAdd`=?"
@@ -41,15 +45,18 @@ class Twitter extends CI_Controller {
 		);
 
 		$result=$this->db->query($sql,$sqlvl)->result_array();
-		foreach($result as &$row){
+		foreach($result as &$row)
+		{
 			$row['Date']=$this->user_model->convert_to_fuzzy_time($row['Date']);
 		}
 		$data['tweets']=$result;
 		$this->load->view('twitter/hyouji',$data);
 	}
 
-	function submit_tweet(){
-		if($this->input->post('tweettext')==""){
+	function submit_tweet()
+	{
+		if($this->input->post('tweettext')=="")
+		{
 			return FALSE;
 		}
 			$sql="SELECT MAX(`TweetID`) AS `TweetID` FROM `Tweet`";
@@ -67,14 +74,16 @@ class Twitter extends CI_Controller {
 				." LEFT JOIN `User` ON `Tweet`.`MailAdd`=`User`.`MailAdd`"
 			." WHERE `Tweet`.`TweetID`='".($row['TweetID']+1)."'";
 			$result=$this->db->query($sql)->result_array();
-			foreach($result as &$row){
+			foreach($result as &$row)
+			{
 				$row['Date']=$this->user_model->convert_to_fuzzy_time($row['Date']);
 			}
 			$data['tweets']=$result;
 			$this->load->view('twitter/hyouji',$data);
 	}
 
-	function login(){
+	function login()
+	{
 		$this->load->library('form_validation');
 		$this->load->library('session');
 
@@ -87,7 +96,8 @@ class Twitter extends CI_Controller {
 		}
 		else
 		{
-			if ($this->user_model->check_user()==1){
+			if ($this->user_model->check_user()==1)
+			{
 				$sql = "SELECT * FROM `User` WHERE `MailAdd` = ?";
 				$row = $this->db->query($sql,$this->input->post('email'))->row_array();
 				$username=$row['UserName'];
@@ -95,22 +105,24 @@ class Twitter extends CI_Controller {
 
 				redirect('twitter','refresh');
 			}
-			else{
+			else
+			{
 				echo 'パスワードかメールアドレスが間違っています。';
 				$this->load->view('twitter/login');
 
 			}
-
 		}
 	}
 
-	function logout(){
+	function logout()
+	{
 		$this->load->library('session');
 		$this->session->sess_destroy();
 		redirect('twitter/login');
 	}
 
-	function register(){
+	function register()
+	{
 		$this->load->library('form_validation');
 		$this->load->library('session');
 
@@ -134,7 +146,8 @@ class Twitter extends CI_Controller {
 		}
 	}
 
-	function email_check($str){
+	function email_check($str)
+	{
 		$this->db->where('MailAdd',$str);
 		if ($this->db->count_all_results('User')==1)
 		{
