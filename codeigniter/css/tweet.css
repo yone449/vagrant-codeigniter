@@ -1,0 +1,14 @@
+textarea {
+width: 100%;
+}
+div.tweet-part{
+width:500px;
+position: relative;
+top: 0px;
+left:100px;
+}
+div.tweet-index{
+border-width:thin;
+border-color:#d0d0d0;
+border-style:solid;
+}
